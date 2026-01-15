@@ -8,20 +8,24 @@ from .boxes import Box, iou
 def apply_threshold(
     boxes: Sequence[Box],
     scores: Sequence[float],
+    labels: Sequence[str],
     threshold: float,
-) -> Tuple[List[Box], List[float]]:
+) -> Tuple[List[Box], List[float], List[str]]:
     """Decision gate: accept boxes with score >= threshold."""
-    if len(boxes) != len(scores):
-        raise ValueError("boxes and scores must have the same length")
+    if not (len(boxes) == len(scores) == len(labels)):
+        raise ValueError("boxes, scores, and labels must have the same length")
 
     kept_b: List[Box] = []
     kept_s: List[float] = []
-    for b, s in zip(boxes, scores):
+    kept_l: List[str] = []
+
+    for b, s, l in zip(boxes, scores, labels):
         score = float(s)
         if score >= threshold:
             kept_b.append(b)
             kept_s.append(score)
-    return kept_b, kept_s
+            kept_l.append(l)
+    return kept_b, kept_s, kept_l
 
 
 def nms(

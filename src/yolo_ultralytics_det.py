@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List
 
 from PIL import Image
 
@@ -17,7 +17,7 @@ except Exception:  # pragma: no cover
 class YoloDetResult:
     boxes: List[Box]
     scores: List[float]
-    class_ids: List[int]
+    labels: List[str]
 
 
 def run_yolo_ultralytics(
@@ -45,20 +45,24 @@ def run_yolo_ultralytics(
     r = results[0]
     boxes: List[Box] = []
     scores: List[float] = []
-    class_ids: List[int] = []
+    labels: List[str] = []
 
     if r.boxes is None:
-        return YoloDetResult(boxes=[], scores=[], class_ids=[])
+        return YoloDetResult(boxes=[], scores=[], labels=[])
 
     xyxy = r.boxes.xyxy.cpu().numpy().astype(float)
     conf = r.boxes.conf.cpu().numpy().astype(float)
     cls = r.boxes.cls.cpu().numpy().astype(int)
 
+    # Get the class names from the model
+    names = model.names
+
     n = min(max_detections, xyxy.shape[0])
     for i in range(n):
         b = xyxy[i]
+        class_id = int(cls[i])
         boxes.append(Box(float(b[0]), float(b[1]), float(b[2]), float(b[3])))
         scores.append(float(conf[i]))
-        class_ids.append(int(cls[i]))
+        labels.append(names[class_id])
 
-    return YoloDetResult(boxes=boxes, scores=scores, class_ids=class_ids)
+    return YoloDetResult(boxes=boxes, scores=scores, labels=labels)

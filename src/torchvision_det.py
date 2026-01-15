@@ -19,7 +19,7 @@ except Exception:  # pragma: no cover
 class TorchDetResult:
     boxes: List[Box]
     scores: List[float]
-    labels: List[int]
+    labels: List[str]
 
 
 def run_torchvision_ssd_mobilenet(
@@ -47,6 +47,9 @@ def run_torchvision_ssd_mobilenet(
     model = torchvision.models.detection.ssdlite320_mobilenet_v3_large(weights=weights).to(device)
     model.eval()
 
+    # Get class names from the model's metadata
+    coco_classes = weights.meta["categories"]
+
     preprocess = weights.transforms()
     x = preprocess(image).unsqueeze(0).to(device)
 
@@ -55,15 +58,19 @@ def run_torchvision_ssd_mobilenet(
 
     boxes_xyxy = out["boxes"].detach().cpu().numpy().astype(float)
     scores = out["scores"].detach().cpu().numpy().astype(float)
-    labels = out["labels"].detach().cpu().numpy().astype(int)
+    labels_int = out["labels"].detach().cpu().numpy().astype(int)
 
     n = min(max_detections, boxes_xyxy.shape[0])
+    
     boxes: List[Box] = [
         Box(float(b[0]), float(b[1]), float(b[2]), float(b[3])) for b in boxes_xyxy[:n]
     ]
+    
+    # Convert integer labels to string labels
+    labels_str = [coco_classes[i] for i in labels_int[:n]]
 
     return TorchDetResult(
         boxes=boxes,
         scores=[float(s) for s in scores[:n]],
-        labels=[int(l) for l in labels[:n]],
+        labels=labels_str,
     )
