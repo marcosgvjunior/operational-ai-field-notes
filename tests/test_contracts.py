@@ -22,9 +22,11 @@ def test_iou_disjoint_is_zero() -> None:
 def test_threshold_filters() -> None:
     boxes = [Box(0, 0, 10, 10), Box(0, 0, 5, 5)]
     scores = [0.9, 0.2]
-    b, s = apply_threshold(boxes, scores, threshold=0.5)
+    labels = ["a", "b"]
+    b, s, l = apply_threshold(boxes, scores, labels, threshold=0.5)
     assert len(b) == 1
     assert s == [0.9]
+    assert l == ["a"]
 
 
 def test_nms_suppresses_overlap() -> None:
