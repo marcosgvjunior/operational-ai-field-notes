@@ -15,10 +15,39 @@ def draw_boxes(
     labels: Optional[Sequence[str]] = None,
     *,
     color: str = "red",
-    width: int = 4,
-    font_size: int = 25, # Increased default font size
+    width: int = 10,
+    font_size: int = 75,
 ) -> Image.Image:
-    """Return a copy of the image with boxes, scores, and labels drawn legibly."""
+    """
+    Draws bounding boxes, scores, and labels on a copy of an image.
+
+    This function provides a flexible way to visualize detection results. It draws
+    bounding boxes and can optionally display class labels and confidence scores.
+    Text is rendered with a contrasting background for improved legibility.
+
+    Note: The function attempts to load a specific Liberation Sans font. If not
+    found, it falls back to a default font, which may affect text appearance.
+
+    :param image: The base image (PIL.Image.Image) to draw on.
+    :type image: PIL.Image.Image
+    :param boxes: A sequence of Box objects to draw.
+    :type boxes: Sequence[Box]
+    :param scores: An optional sequence of confidence scores for each box.
+    :type scores: Optional[Sequence[float]]
+    :param labels: An optional sequence of string labels for each box.
+    :type labels: Optional[Sequence[str]]
+    :param color: The color to use for the bounding box and text background.
+                  Defaults to "red".
+    :type color: str, optional
+    :param width: The line width for the bounding box. Defaults to 10.
+    :type width: int, optional
+    :param font_size: The desired font size for labels and scores. Defaults to 75.
+    :type font_size: int, optional
+    :return: A new PIL.Image.Image with the annotations drawn.
+    :rtype: PIL.Image.Image
+    :raises ValueError: If the length of `scores` or `labels` does not match
+                        the length of `boxes`.
+    """
     if scores is not None and len(scores) != len(boxes):
         raise ValueError("scores must match the number of boxes")
     if labels is not None and len(labels) != len(boxes):
@@ -28,7 +57,6 @@ def draw_boxes(
     draw = ImageDraw.Draw(out)
 
     # Load a reasonably-sized font, falling back to the default if not found.
-    # This is the robust approach from the user's reference code.
     try:
         font = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSansNarrow-Regular.ttf", font_size)
     except IOError:
@@ -54,11 +82,11 @@ def draw_boxes(
         # If there is text, draw it with a background for readability
         if display_str:
             # Calculate text size
-            try: # Modern method
+            try:  # Modern method
                 text_bbox = draw.textbbox((0, 0), display_str, font=font)
                 text_width = text_bbox[2] - text_bbox[0]
                 text_height = text_bbox[3] - text_bbox[1]
-            except AttributeError: # Older method
+            except AttributeError:  # Older method
                 text_width, text_height = draw.textsize(display_str, font=font)
 
             margin = int(np.ceil(0.05 * text_height))

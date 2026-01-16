@@ -15,6 +15,13 @@ except Exception:  # pragma: no cover
 
 @dataclass(frozen=True)
 class YoloDetResult:
+    """
+    Holds the results of a YOLO detection.
+
+    :param boxes: A list of detected bounding boxes.
+    :param scores: A list of confidence scores for each detection.
+    :param labels: A list of class labels for each detection.
+    """
     boxes: List[Box]
     scores: List[float]
     labels: List[str]
@@ -26,14 +33,22 @@ def run_yolo_ultralytics(
     model_name: str = "yolov8n.pt",
     max_detections: int = 50,
 ) -> YoloDetResult:
-    """Run YOLO detection via ultralytics.
+    """
+    Runs YOLO object detection on an image using the ultralytics library.
 
-    WHY: YOLO is a detector, so it belongs in the detection scope. This notebook is optional
-    because it adds a heavier dependency.
+    This function requires the 'ultralytics' package to be installed.
 
-    Install
-    -------
-    `pip install -r requirements-yolo.txt`
+    :param image: The input image to process.
+    :type image: PIL.Image.Image
+    :param model_name: The name of the YOLO model file to use.
+                       Defaults to "yolov8n.pt".
+    :type model_name: str, optional
+    :param max_detections: The maximum number of detections to return.
+                           Defaults to 50.
+    :type max_detections: int, optional
+    :return: An object containing the detected boxes, scores, and labels.
+    :rtype: YoloDetResult
+    :raises RuntimeError: If the 'ultralytics' library is not installed.
     """
     if YOLO is None:  # pragma: no cover
         raise RuntimeError("Missing ultralytics. Install: pip install -r requirements-yolo.txt")
