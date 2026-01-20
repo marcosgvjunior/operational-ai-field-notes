@@ -2,6 +2,11 @@
 
 This directory contains the core, framework-agnostic Python modules that implement the project's "operational contract." The code here is engineered not just to work, but to serve as a clear, maintainable, and robust reference implementation of key software design principles applied to an ML context.
 
+It is organized into sub-directories based on ML domain:
+
+*   `vision/`: Computer vision modules.
+*   `nlp/`: Natural language processing modules (currently a placeholder).
+
 ## Guiding Engineering Principles
 
 The design of this codebase is a deliberate exercise in software craftsmanship. The following principles are not just guidelines; they are strictly enforced.
@@ -23,10 +28,13 @@ The design of this codebase is a deliberate exercise in software craftsmanship. 
 *   **Testability:** The system is designed for correctness, which is verified through testing.
     *   By decoupling the core logic from the ML frameworks, we can write precise and reliable unit tests for every component of the "operational contract." The full test suite resides in the `../tests/` directory and serves as live documentation for the expected behavior of the code.
 
-## Modules
+## Modules (`src/vision`)
 
 *   `boxes.py`: Defines the primary `Box` data structure and the core "operational contract" functions, including Intersection over Union (`iou`) and Non-Maximum Suppression (`nms`).
-*   `coco_labels.py`: Provides a utility mapping from MS COCO dataset class indices to human-readable string labels.
+*   `contracts.py`: Defines the data contracts (e.g. `DetectionResult`) for consistent data structures across different models.
+*   `segmentation.py`: An adapter module for `torchvision` semantic segmentation models.
+*   `tfhub_det.py`: An adapter module for TensorFlow Hub object detection models.
 *   `tfhub_det_openimages.py`: An adapter module containing a wrapper for a specific TensorFlow Hub object detection model (SSD w/ MobileNetV2) trained on the Open Images V4 dataset.
-*   `unet_segmentation_stub.py`: A placeholder file for future work on image segmentation, aligning the repository with the project roadmap.
+*   `torchvision_det.py`: An adapter module for PyTorch/Torchvision object detection models.
 *   `viz.py`: Contains utility functions for drawing bounding boxes, labels, and scores on images to visualize model outputs.
+*   `yolo_ultralytics_det.py`: An adapter module for Ultralytics YOLO models.

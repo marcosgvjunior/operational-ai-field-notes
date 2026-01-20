@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from PIL import Image
 
-from src.boxes import Box, iou
-from src.contracts import apply_threshold, nms
-from src.viz import draw_boxes
+from src.vision.boxes import Box, iou
+from src.vision.contracts import apply_threshold, nms
+from src.vision.viz import draw_boxes
 
 
 def test_iou_identical_is_one() -> None:

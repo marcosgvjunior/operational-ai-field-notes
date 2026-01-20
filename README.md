@@ -24,11 +24,16 @@ The project notebooks are designed for and tested on Google Colab. The repositor
 
 The current notebooks demonstrate the "operational contract" for object detection using a variety of popular frameworks, models, and datasets:
 
-*   **Frameworks:** PyTorch, TensorFlow Hub, Ultralytics
-*   **Architectures:** SSD (Single Shot Detector), YOLOv8
-*   **Backbones:** VGG16, MobileNetV2
-*   **Label Sets:** MS COCO, Google's Open Images V4
 *   **Core Concepts:** Intersection over Union (IoU), Non-Maximum Suppression (NMS), Score Thresholding
+*   **Object Detection:**
+    *   **Frameworks:** PyTorch, TensorFlow Hub, Ultralytics
+    *   **Architectures:** SSD (Single Shot Detector), YOLOv8
+    *   **Backbones:** VGG16, MobileNetV2
+    *   **Label Sets:** MS COCO, Google's Open Images V4
+*   **Semantic Segmentation:**
+    *   **Frameworks:** PyTorch (via torchvision)
+    *   **Architectures:** DeepLabV3, FCN
+    *   **Backbones:** ResNet50
 
 ## Getting Started
 
@@ -67,9 +72,10 @@ python -m venv venv
 pip install -r requirements.txt
 
 # To run the notebooks, install one or more of the following
-pip install -r requirements-torch.txt
-pip install -r requirements-tf.txt
-pip install -r requirements-yolo.txt
+pip install -r requirements/requirements-torch.txt
+pip install -r requirements/requirements-tf.txt
+pip install -r requirements/requirements-yolo.txt
+pip install -r requirements/requirements-nlp.txt
 ```
 
 **4. Run Tests (Optional)**
